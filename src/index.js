@@ -1,9 +1,8 @@
 import connectDb from "./db/db.js";
 import dotenv from "dotenv";
-import express from "express";
+import {app} from "./app.js";
 dotenv.config();
 
-const app = express();
 
 const startServer = async () => {
   try {
@@ -18,5 +17,3 @@ const startServer = async () => {
 };
 
 startServer();
-
-
