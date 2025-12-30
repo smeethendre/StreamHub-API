@@ -1,6 +1,4 @@
 import multer from "multer";
-import { ApiError } from "./apiError";
-import asyncHandler from "./asyncHandler";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

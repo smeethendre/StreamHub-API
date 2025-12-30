@@ -51,7 +51,23 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid credentials");
   }
 
-  
+  // now we have to generate the access and refresh token
+
+  const generateAccessAndRefreshToken = async (user) => {
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  };
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+    maxAge: 24 * 60 * 60 * 1000,
+  });
 });
 
 export { loginUser };
