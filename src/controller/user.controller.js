@@ -50,6 +50,8 @@ const loginUser = asyncHandler(async (req, res) => {
   if (!checkPassword) {
     throw new ApiError(401, "Invalid credentials");
   }
+
+  
 });
 
 export { loginUser };
