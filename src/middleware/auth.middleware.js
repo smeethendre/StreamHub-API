@@ -4,7 +4,7 @@
 import { User } from "../model/user.model.js";
 import jwt from "jsonwebtoken";
 import { ApiError } from "../util/apiError.js";
-import asyncHandler from "../util/asyncHandler";
+import asyncHandler from "../util/asyncHandler.js";
 
 const verifyToken = asyncHandler(async (req, res, next) => {
   try {
@@ -23,7 +23,7 @@ const verifyToken = asyncHandler(async (req, res, next) => {
     }
 
     const user = await User.findById(decodedInfo?._id).select(
-      "-password - refreshToken"
+      "-password -refreshToken"
     );
 
     req.user = user;

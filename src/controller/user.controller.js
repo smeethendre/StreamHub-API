@@ -68,4 +68,9 @@ const loginUser = asyncHandler(async (req, res) => {
   });
 });
 
+import {verifyToken} from "../middleware/auth.middleware.js";
+
+const logoutUser = async (user) => {}
+  
+
 export { registerUser, loginUser };
