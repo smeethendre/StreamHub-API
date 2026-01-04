@@ -68,9 +68,48 @@ const loginUser = asyncHandler(async (req, res) => {
   });
 });
 
-import {verifyToken} from "../middleware/auth.middleware.js";
+const logoutUser = async (req, res, next) => {
+  if (!req.user) throw ApiError(400, "user doesn't exist");
 
-const logoutUser = async (user) => {}
-  
+  req.user.refreshToken = null;
+  await req.user.save({ validateBeforeSave: false });
 
-export { registerUser, loginUser };
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+  });
+
+  return res.staus(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+};
+
+const updatePassword = asyncHandler(async (req, res, next) => {
+  const { oldPassword, newPassword } = req.body;
+  const user = await User.findById(req.user._id);
+  if (!user) throw new ApiError(404, "User doesn't exit");
+  const checkPassword = await bcrypt.compare(oldPassword, user.password);
+
+  if (checkPassword === false) {
+    throw new ApiError(400, "Password doesn't match");
+  }
+
+  const samePassword = await bcrypt.compare(newPassword, user.password);
+
+  if (samePassword === true) {
+    throw new ApiError(400, "New password should be different that older");
+  }
+
+  user.password = newPassword;
+
+  const savePassword = await user.save({ validateBeforeSave: true });
+
+  res.status(200).json({
+    success: true,
+    message: "Password updated succesfully",
+  });
+});
+
+export { registerUser, loginUser, logoutUser, updatePassword };
